@@ -1,0 +1,134 @@
+<p-toast></p-toast>
+
+<div class="card">
+  <p-toolbar styleClass="p-mb-4">
+    <ng-template pTemplate="left">
+      <button pButton pRipple label="New" icon="pi pi-plus" class="p-button-success p-mr-2" (click)="openNew()"></button>
+    </ng-template>
+  </p-toolbar>
+  <p-table  #dt [value]="suppliers" [rows]="10" [paginator]="true" [globalFilterFields]="['name','country.name','representative.name','status']"
+            [(selection)]="selectedSuppliers" [rowHover]="true" dataKey="id"
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [showCurrentPageReport]="true">
+    <ng-template pTemplate="caption">
+      <div class="p-d-flex p-ai-center p-jc-between">
+        <h5 class="p-m-0">Manage Suppliers</h5>
+        <span class="p-input-icon-left">
+                    <i class="pi pi-search"></i>
+                    <input pInputText type="text" (input)="dt.filterGlobal($any($event.target).value, 'contains')" placeholder="Search..." />
+                </span>
+      </div>
+    </ng-template>>
+  <ng-template pTemplate="header">
+    <tr>
+      <th pSortableColumn="name">Name</th>
+      <th pSortableColumn="fiscalCode">Fiscal Code</th>
+      <th pSortableColumn="patentcode">Patent Code</th>
+      <th pSortableColumn="legalStatus">Legal Status</th>
+      <th pSortableColumn="category">Category</th>
+      <th pSortableColumn="finality">Finality</th>
+      <th pSortableColumn="size">Size</th>
+      <th pSortableColumn="sector">Sector</th>
+      <th pSortableColumn="scope">Scope</th>
+      <th></th>
+  </ng-template>
+  <ng-template pTemplate="body" let-supplier>
+    <tr>
+      <td>{{supplier.name}}</td>
+      <td>{{supplier.fiscalCode}}</td>
+      <td>{{supplier.patentcode}}</td>
+      <td>{{supplier.legalStatus}}</td>
+      <td>{{supplier.category}}</td>
+      <td>{{supplier.finality}}</td>
+      <td>{{supplier.size}}</td>
+      <td>{{supplier.sector}}</td>
+      <td>{{supplier.scope}}</td>
+
+      <td>
+        <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success p-mr-2" (click)="editSupplier(supplier)"></button>
+        <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning" (click)="deleteSupplier(supplier)"></button>
+      </td>
+    </tr>
+  </ng-template>
+    <ng-template pTemplate="summary">
+      <div class="p-d-flex p-ai-center p-jc-between">
+        In total there are {{suppliers ? suppliers.length : 0 }} products.
+      </div>
+    </ng-template>
+  </p-table>
+</div>
+<p-dialog [(visible)]="supplierDialog" [style]="{width: '400px',height:'600'}" header="Product Detail" [modal]="true" styleClass="p-fluid">
+  <ng-template pTemplate="content">
+    <div class="p-field">
+      <label for="name">Name</label>
+      <input type="text" pInputText id="name" [(ngModel)]="supplier.name" required autofocus />
+      <small class="p-error" *ngIf="submitted && !supplier.name">Name is required.</small>
+    </div>
+    <div class="p-field">
+      <label for="name">Fiscal Code</label>
+      <input type="text" pInputText id="fiscalcode" [(ngModel)]="supplier.fiscalCode" required autofocus />
+      <small class="p-error" *ngIf="submitted && !supplier.fiscalCode">Fiscal Code is required.</small>
+    </div>
+    <div class="p-field">
+      <label for="name">Patent Code</label>
+      <input type="text" pInputText id="patentcode" [(ngModel)]="supplier.patentcode" required autofocus />
+      <small class="p-error" *ngIf="submitted && !supplier.fiscalCode">Patent Code is required.</small>
+    </div>
+    <div class="p-field">
+      <label >Category</label>
+      <p-dropdown [(ngModel)]="supplier.category" inputId="category" [options]="category" placeholder="Select">
+        <ng-template let-option pTemplate="item">
+          <span [class]="'product-badge status-' + option.value">{{option.label}}</span>
+        </ng-template>
+      </p-dropdown>
+    </div>
+    <div class="p-field">
+      <label >Legal Status</label>
+      <p-dropdown [(ngModel)]="supplier.legalStatus" inputId="legalStatus" [options]="legalStatus" placeholder="Select">
+        <ng-template let-option pTemplate="item">
+          <span [class]="'product-badge status-' + option.value">{{option.label}}</span>
+        </ng-template>
+      </p-dropdown>
+    </div>
+    <div class="p-field">
+      <label >Finality</label>
+      <p-dropdown [(ngModel)]="supplier.finality" inputId="finality" [options]="finality" placeholder="Select">
+        <ng-template let-option pTemplate="item">
+          <span [class]="'product-badge status-' + option.value">{{option.label}}</span>
+        </ng-template>
+      </p-dropdown>
+    </div>
+
+    <div class="p-field">
+      <label >Size</label>
+      <p-dropdown [(ngModel)]="supplier.size" inputId="size" [options]="size" placeholder="Select">
+        <ng-template let-option pTemplate="item">
+          <span [class]="'product-badge status-' + option.value">{{option.label}}</span>
+        </ng-template>
+      </p-dropdown>
+    </div>
+
+    <div class="p-field">
+      <label >Sector</label>
+      <p-dropdown [(ngModel)]="supplier.sector" inputId="sector" [options]="sector" placeholder="Select">
+        <ng-template let-option pTemplate="item">
+          <span [class]="'product-badge status-' + option.value">{{option.label}}</span>
+        </ng-template>
+      </p-dropdown>
+    </div>
+    <div class="p-field">
+      <label >Scope</label>
+      <p-dropdown [(ngModel)]="supplier.scope" inputId="scope" [options]="scope" placeholder="Select">
+        <ng-template let-option pTemplate="item">
+          <span [class]="'product-badge status-' + option.value">{{option.label}}</span>
+        </ng-template>
+      </p-dropdown>
+    </div>
+  </ng-template>
+
+  <ng-template pTemplate="footer">
+    <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+    <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" (click)="saveSupplier()"></button>
+  </ng-template>
+</p-dialog>
+
+<p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>
